@@ -9,13 +9,15 @@ import SessionsCountry from './components/SessionsCountry';
 import Statistics from './components/Statistics';
 import TopAgents from './components/TopAgents';
 import TotalRevenue from './components/TotalRevenue';
+import AddTags from './components/tags/AddTags';
 export const metadata = {
   title: 'Agent'
 };
 const AgentPage = () => {
   return <>
-      <PageTitle title="Agent" subName="Dashboards" />
-      <Row>
+      <PageTitle title="Tags" subName="Dashboards" />
+      <AddTags />
+      {/* <Row>
         <Statistics />
       </Row>
       <Row>
@@ -37,7 +39,7 @@ const AgentPage = () => {
           <Goals />
           <JoinAgent />
         </Col>
-      </Row>
+      </Row> */}
     </>;
 };
 export default AgentPage;

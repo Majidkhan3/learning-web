@@ -14,7 +14,7 @@ const ProfileDropdown = () => {
         <DropdownHeader as={'h6'} className="dropdown-header">
           Welcome Gaston!
         </DropdownHeader>
-        <DropdownItem as={Link} href="/profile">
+        {/* <DropdownItem as={Link} href="/profile">
           <IconifyIcon icon="solar:calendar-broken" className="align-middle me-2 fs-18" />
           <span className="align-middle">My Schedules</span>
         </DropdownItem>
@@ -29,7 +29,7 @@ const ProfileDropdown = () => {
         <DropdownItem as={Link} href="/auth/lock-screen">
           <IconifyIcon icon="solar:lock-keyhole-broken" className="align-middle me-2 fs-18" />
           <span className="align-middle">Lock screen</span>
-        </DropdownItem>
+        </DropdownItem> */}
         <div className="dropdown-divider my-1" />
         <DropdownItem as={Link} className=" text-danger" href="/auth/sign-in">
           <IconifyIcon icon="solar:logout-3-broken" className="align-middle me-2 fs-18" />

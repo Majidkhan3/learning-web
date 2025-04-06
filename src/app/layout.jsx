@@ -11,13 +11,7 @@ const figtree = Figtree({
   weight: ['300', '400', '500', '600', '700', '800', '900'],
   display: 'swap'
 });
-export const metadata = {
-  title: {
-    template: '%s | Lahomes Nextjs - Real Estate Management Admin Template',
-    default: DEFAULT_PAGE_TITLE
-  },
-  description: 'A fully responsive premium admin dashboard template, Real Estate Management Admin Template'
-};
+
 const splashScreenStyles = `
 #splash-screen {
   position: fixed;
