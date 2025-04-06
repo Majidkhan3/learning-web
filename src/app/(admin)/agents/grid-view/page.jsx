@@ -8,6 +8,7 @@ export const metadata = {
   title: 'Agent Grid'
 };
 const GridViewPage = () => {
+  console.log("GridViewPage");
   return <>
       <PageTitle subName="Real Estate" title="Agent Grid" />
       <AgentGridCard />
