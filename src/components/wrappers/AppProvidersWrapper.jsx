@@ -13,7 +13,7 @@ const AppProvidersWrapper = ({
   children
 }) => {
   const handleChangeTitle = () => {
-    if (document.visibilityState == 'hidden') document.title = 'Please come back 🥺';else document.title = DEFAULT_PAGE_TITLE;
+    if (document.visibilityState == 'hidden') document.title = 'Please come back 🥺';
   };
   useEffect(() => {
     if (document) {
