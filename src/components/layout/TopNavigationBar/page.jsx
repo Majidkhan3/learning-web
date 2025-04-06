@@ -25,7 +25,7 @@ const page = () => {
 
               <MaximizeScreen />
 
-              <Notifications />
+              {/* <Notifications /> */}
 
               <ThemeCustomizerToggle />
 
