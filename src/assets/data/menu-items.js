@@ -29,6 +29,18 @@ export const MENU_ITEMS = [
       },
     ],
   },
+  {
+    key: 'dialogues',
+    label: 'Dialogues',
+    icon: 'ri:home-office-line',
+    url: '/dashboards/dialogues',
+  },
+  {
+    key: 'story',
+    label: 'Histoires',
+    icon: 'ri:arrow-left-right-line',
+    url: '/dashboards/story',
+  },
   // {
   //   key: 'property',
   //   label: 'Property',
