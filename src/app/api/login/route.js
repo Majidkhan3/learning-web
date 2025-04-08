@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { connectToDatabase } from '../db/route'
 import User from '../../../model/User'
+import connectToDatabase from '@/lib/db'
 export async function POST(req) {
   try {
     await connectToDatabase()
