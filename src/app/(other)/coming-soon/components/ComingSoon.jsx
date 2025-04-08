@@ -6,7 +6,10 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import { Card, CardBody, Col, Container, Row } from 'react-bootstrap';
 import Timer from './Timer';
+import { useAuth } from '@/components/wrappers/AuthProtectionWrapper';
 const ComingSoon = () => {
+  const {user} = useAuth();
+    console.log("user",user)
   useEffect(() => {
     document.body.classList.add('authentication-bg');
     return () => {

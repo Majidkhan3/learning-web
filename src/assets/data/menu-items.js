@@ -27,6 +27,12 @@ export const MENU_ITEMS = [
         url: '/dashboards/word',
         parentKey: 'dashboards',
       },
+      {
+        key: 'add-multiple-words',
+        label: 'Ajouter plusieurs mots',
+        // icon: 'ri:inbox-line',
+        url: '/dashboards/add-multiple-words',
+      },
     ],
   },
   {
@@ -40,6 +46,12 @@ export const MENU_ITEMS = [
     label: 'Histoires',
     icon: 'ri:arrow-left-right-line',
     url: '/dashboards/story',
+  },
+  {
+    key: 'flashcard',
+    label: 'Flash Cards',
+    icon: 'ri:discuss-line',
+    url: '/dashboards/flashcard',
   },
   // {
   //   key: 'property',

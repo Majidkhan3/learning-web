@@ -8,6 +8,7 @@ import Transaction from './components/Transaction';
 import PageWithFilters from '@/app/(admin)/dashboards/espagnol/components/espagnol/PageWithFilters';
 
 import IconifyIcon from '@/components/wrappers/IconifyIcon';
+import { useAuth } from '@/components/wrappers/AuthProtectionWrapper';
 export const metadata = {
   title: 'Espagnol'
   // description: 'Espagnol',

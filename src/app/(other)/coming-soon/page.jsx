@@ -1,8 +1,16 @@
-import ComingSoon from './components/ComingSoon';
+// import ComingSoon from './components/ComingSoon';
+import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
 export const metadata = {
-  title: 'Coming Soon'
-};
+  title: 'Coming Soon',
+}
+const Coming = dynamic(() => import('./components/ComingSoon'))
+
 const ComingSoonPage = () => {
-  return <ComingSoon />;
-};
-export default ComingSoonPage;
+  return (
+    <Suspense>
+      <Coming />
+    </Suspense>
+  )
+}
+export default ComingSoonPage
