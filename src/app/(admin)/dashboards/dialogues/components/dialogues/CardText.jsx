@@ -1,53 +1,61 @@
-'use client'
+'use client';
 
-import React, { useState } from 'react'
-import PageTitle from '@/components/PageTitle'
-import { Col, Row, Card, Button, Form, Spinner } from 'react-bootstrap'
-import Link from 'next/link'
+import React, { useState, useEffect } from 'react';
+import PageTitle from '@/components/PageTitle';
+import { Col, Row, Card, Button, Form, Spinner } from 'react-bootstrap';
+import Link from 'next/link';
+import { useAuth } from '@/components/wrappers/AuthProtectionWrapper';
 
 const CardText = () => {
-  const [file, setFile] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [generatedDialogues, setGeneratedDialogues] = useState([])
+  const {user} = useAuth()
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [generatedDialogues, setGeneratedDialogues] = useState([]);
+  const [dialogues, setDialogues] = useState([]); // State to store dialogues from the database
+  const [fetching, setFetching] = useState(true); // State to track fetching status
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0])
-  }
+    setFile(e.target.files[0]);
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!file) return
+    e.preventDefault();
+    if (!file) return;
 
-    const formData = new FormData()
-    formData.append('file', file)
+    const formData = new FormData();
+    formData.append('file', file);
 
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await fetch('/api/dialogues', {
         method: 'POST',
         body: formData,
-      })
-      const data = await res.json()
-      setGeneratedDialogues(data.dialogues || [])
+      });
+      const data = await res.json();
+      setGeneratedDialogues(data.dialogues || []);
     } catch (err) {
-      console.error(err)
+      console.error(err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const dialogues = [
-    {
-      id: 'abc123',
-      source: 'YouTube - https://www.youtube.com/watch?v=nqZkDOOVZEs&t=609s',
-      createdAt: '2025-03-23T08:30:43.134131',
-    },
-    {
-      id: 'xyz456',
-      source: 'ES380 - Transcript in Spanish only - Are Mexicans Using AI.pdf',
-      createdAt: '2025-03-23T07:45:25.486848',
-    },
-  ]
+  // Fetch dialogues from the database
+  useEffect(() => {
+    const fetchDialogues = async () => {
+      try {
+        const res = await fetch(`/api/dialogues?userId=${user._id}`); // Replace with your API endpoint
+        const data = await res.json();
+        setDialogues(data.dialogues || []);
+      } catch (err) {
+        console.error('Error fetching dialogues:', err);
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    fetchDialogues();
+  }, []);
 
   return (
     <>
@@ -89,23 +97,29 @@ const CardText = () => {
 
       <h5 className="fw-bold mb-3">Fichiers traités</h5>
 
-      {dialogues.map((dialogue) => (
-        <Card className="mb-3" key={dialogue.id}>
-          <Card.Body>
-            <p className="mb-1">
-              <strong>{dialogue.source}</strong>
-            </p>
-            <p className="text-muted small">Ajouté le: {dialogue.createdAt}</p>
-            <Link href={`/dashboards/dialogues/view/${dialogue.id}`}>
-              <Button variant="outline-primary" size="sm">
-                Voir les dialogues
-              </Button>
-            </Link>
-          </Card.Body>
-        </Card>
-      ))}
+      {fetching ? (
+        <Spinner animation="border" />
+      ) : dialogues.length > 0 ? (
+        dialogues.map((dialogue) => (
+          <Card className="mb-3" key={dialogue._id}>
+            <Card.Body>
+              <p className="mb-1">
+                <strong>{dialogue.url || 'Source inconnue'}</strong>
+              </p>
+              <p className="text-muted small">Ajouté le: {new Date(dialogue.createdAt).toLocaleString()}</p>
+              <Link href={`/dashboards/dialogues/view/${dialogue._id}`}>
+                <Button variant="outline-primary" size="sm">
+                  Voir les dialogues
+                </Button>
+              </Link>
+            </Card.Body>
+          </Card>
+        ))
+      ) : (
+        <p>Aucun dialogue trouvé.</p>
+      )}
     </>
-  )
-}
+  );
+};
 
-export default CardText
+export default CardText;

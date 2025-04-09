@@ -1,71 +1,94 @@
-'use client'
+'use client';
 
-import IconifyIcon from '@/components/wrappers/IconifyIcon'
-import { useParams } from 'next/navigation'
-import { useEffect, useState, useRef } from 'react'
-import { Button, Card, Form, Row, Col } from 'react-bootstrap'
+import IconifyIcon from '@/components/wrappers/IconifyIcon';
+import { useParams } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { Button, Card, Form, Row, Col } from 'react-bootstrap';
 
 const DialogueViewer = () => {
-  const { id } = useParams()
+  const { id } = useParams();
+  const [dialogue, setDialogue] = useState(null);
+  const [parsedDialogues, setParsedDialogues] = useState([]); // Store parsed dialogues
+  const [voiceA, setVoiceA] = useState('Lucia');
+  const [voiceB, setVoiceB] = useState('Enrique');
+  const [availableVoices, setAvailableVoices] = useState([]);
+  const synthRef = useRef(window.speechSynthesis);
+  console.log("dialogues", parsedDialogues)
+  useEffect(() => {
+    if (id) {
+      fetch(`/api/dialogues/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.dialogue) {
+            setDialogue(data.dialogue);
+            parseDialogues(data.dialogue); 
+          } else {
+            console.error('Error: No dialogue data found.');
+          }
+        })
+        .catch((error) => console.error('Error fetching dialogue:', error));
+    }
+  }, [id]);
 
-  const [voiceA, setVoiceA] = useState('Lucia')
-  const [voiceB, setVoiceB] = useState('Enrique')
-  const [availableVoices, setAvailableVoices] = useState([])
-  const synthRef = useRef(window.speechSynthesis)
-
-  const dialogue = {
-    id: 'abc123',
-    url: 'https://www.youtube.com/watch?v=nqZkDOOVZEs&t=609s',
-    conversations: [
-      {
-        a: '¿Cómo explicarías que el diluvio universal es un evento histórico y no un mito?',
-        b: 'Como apologista cristiano, puedo afirmar con certeza que el diluvio fue un evento histórico real...'
-      },
-      {
-        a: '¿Qué evidencias geológicas apoyan la existencia del diluvio universal?',
-        b: 'Las evidencias son contundentes cuando observamos las capas sedimentarias en todo el mundo...'
+  const parseDialogues = (dialogueString) => {
+    const lines = dialogueString.split('\n');
+    const dialogues = [];
+    let currentDialogue = {};
+  
+    lines.forEach((line) => {
+      if (line.includes('Persona A:') || line.includes('Personne A:')) {
+        currentDialogue.a = line.split(/Persona A:|Personne A:/)[1]?.trim();
+      } else if (line.includes('Persona B:') || line.includes('Personne B:')) {
+        currentDialogue.b = line.split(/Persona B:|Personne B:/)[1]?.trim();
+        dialogues.push(currentDialogue); // Add the completed dialogue
+        currentDialogue = {}; // Reset for the next dialogue
       }
-    ]
-  }
-
+    });
+  
+    setParsedDialogues(dialogues);
+  };
   // Load voices when available
   useEffect(() => {
     const loadVoices = () => {
-      const voices = synthRef.current.getVoices()
-      setAvailableVoices(voices)
-    }
+      const voices = synthRef.current.getVoices();
+      setAvailableVoices(voices);
+    };
 
     // Some browsers load voices asynchronously
     if (synthRef.current.onvoiceschanged !== undefined) {
-      synthRef.current.onvoiceschanged = loadVoices
+      synthRef.current.onvoiceschanged = loadVoices;
     }
 
-    loadVoices()
-  }, [])
+    loadVoices();
+  }, []);
 
   const speak = (text, voiceLabel) => {
-    const utterance = new SpeechSynthesisUtterance(text)
+    const utterance = new SpeechSynthesisUtterance(text);
 
-    const selectedVoice = availableVoices.find(v =>
+    const selectedVoice = availableVoices.find((v) =>
       v.name.toLowerCase().includes(voiceLabel.toLowerCase())
-    )
+    );
 
     if (selectedVoice) {
-      utterance.voice = selectedVoice
+      utterance.voice = selectedVoice;
     }
 
-    synthRef.current.speak(utterance)
-  }
+    synthRef.current.speak(utterance);
+  };
 
   const stopSpeaking = () => {
-    synthRef.current.cancel()
+    synthRef.current.cancel();
+  };
+
+  if (!dialogue) {
+    return <div>Loading...</div>;
   }
 
   return (
     <div>
       <h3>
         📢 Dialogues générés pour YouTube -{' '}
-        <a href={dialogue.url} target="_blank">
+        <a href={dialogue.url} target="_blank" rel="noopener noreferrer">
           {dialogue.url}
         </a>
       </h3>
@@ -109,11 +132,11 @@ const DialogueViewer = () => {
           variant="success"
           className="me-2"
           onClick={() => {
-            dialogue.conversations.forEach((conv, i) => {
-              const delay = i * 3000
-              setTimeout(() => speak(conv.a, voiceA), delay)
-              setTimeout(() => speak(conv.b, voiceB), delay + 1500)
-            })
+            parsedDialogues.forEach((conv, i) => {
+              const delay = i * 3000;
+              setTimeout(() => speak(conv.a, voiceA), delay);
+              setTimeout(() => speak(conv.b, voiceB), delay + 1500);
+            });
           }}
         >
           Lire tous les dialogues
@@ -123,7 +146,7 @@ const DialogueViewer = () => {
         </Button>
       </div>
 
-      {dialogue.conversations.map((conv, idx) => (
+      {parsedDialogues.map((conv, idx) => (
         <Card className="mb-3" key={idx}>
           <Card.Body>
             <Row>
@@ -135,7 +158,7 @@ const DialogueViewer = () => {
                     onClick={() => speak(conv.a, voiceA)}
                     title="Lire ce texte"
                   >
-                     <IconifyIcon icon="ri:volume-up-line" className="align-middle fs-18" />
+                    <IconifyIcon icon="ri:volume-up-line" className="align-middle fs-18" />
                   </Button>
                 </div>
                 <p>{conv.a}</p>
@@ -148,7 +171,7 @@ const DialogueViewer = () => {
                     onClick={() => speak(conv.b, voiceB)}
                     title="Lire ce texte"
                   >
-                     <IconifyIcon icon="ri:volume-up-line" className="align-middle fs-18" />
+                    <IconifyIcon icon="ri:volume-up-line" className="align-middle fs-18" />
                   </Button>
                 </div>
                 <p>{conv.b}</p>
@@ -158,7 +181,7 @@ const DialogueViewer = () => {
         </Card>
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default DialogueViewer
+export default DialogueViewer;

@@ -33,7 +33,9 @@ const LoginPage = () => {
       
       console.log(data,"data")
       if(res.ok) {
-        login(data);
+        // login(data);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
         console.log("login data",data)
         // localStorage.setItem("token", data.token);
       }
