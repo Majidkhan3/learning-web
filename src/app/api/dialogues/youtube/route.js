@@ -27,7 +27,7 @@ export async function POST(req) {
     const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'x-api-key': process.env.CLAUDE_API_KEY || '',
+        'x-api-key': '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' || '',
         'anthropic-version': '2023-06-01',
         'content-type': 'application/json',
       },
