@@ -27,7 +27,7 @@ export async function POST(req) {
     const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'x-api-key': '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' || '',
+        'x-api-key': process.env.CLAUDE_API_KEY || '',
         'anthropic-version': '2023-06-01',
         'content-type': 'application/json',
       },
@@ -46,6 +46,7 @@ export async function POST(req) {
 
     const data = await claudeResponse.json()
     const content = data?.content?.[0]?.text || ''
+    console.log('Claude response:', data)
 
     // Save dialogue to MongoDB
     const dialogue = new Dialogue({
@@ -57,7 +58,7 @@ export async function POST(req) {
     await dialogue.save()
 
     // Redirect to the dialogue view page
-    const dialogueId = dialogue._id.toString()
+    const dialogueId = dialogue?._id.toString()
     return NextResponse.json({ status: 'success', dialogueId, dialogue: content }, { status: 200 })
   } catch (error) {
     console.error('Error:', error)
